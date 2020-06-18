@@ -1,68 +1,264 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Main Concepts
 
-## Available Scripts
+## 목차
 
-In the project directory, you can run:
+6. [조건부 렌더링]
+7. [리스트와 Key]
+8. [폼]
+9. [State]
+10. [합성 / 상속]
 
-### `npm start`
+## [조건부 렌더링]
+- if문이나 조건부 연산자(삼항연산자)를 사용해 현재 상태에 맞는 UI를 업데이트 한다.
 
-Runs the app in the development mode.<br />
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+### 로그인 여부 상태에 따라 로그인/로그아웃 버튼 바뀌도록 하는 Greeting 컴포넌트 생성하기
+- 예제
+  ```
+  function UserGreeting(props) {        
+      return <h1>Welcome back!</h1>
+  }
+  function GuestGreeting(props) {
+    return <h1>Please sign up.</h1>;
+    }
+  );
 
-The page will reload if you make edits.<br />
-You will also see any lint errors in the console.
+  function Greeting(props) {
+      const isLoggedIn = props.isLoggedIn;
+      if (isLoggedIn) {
+          return <UserGreeting />;
+      } return <GuestGreeting />;
+  }
 
-### `npm test`
+  ReactDOM.render(
+    <Greeting isLoggedIn={false} />,
+    document.getElementById('root')
+    );
 
-Launches the test runner in the interactive watch mode.<br />
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+  ```
 
-### `npm run build`
+  ### 엘리먼트 변수
+  - 엘리먼트를 저장하기 위해 변수를 사용하고, 출력의 다른 부분은 변하지 않은 채로 컴포넌트 일부를 조건부로 렌더링 할 수 있다.
 
-Builds the app for production to the `build` folder.<br />
-It correctly bundles React in production mode and optimizes the build for the best performance.
+  - 예제
+    ```
+    function LoginButton(props) {
+        return (
+            <button onClick={props.onClick}>
+            Login
+            </button>
+        );
+    }
 
-The build is minified and the filenames include the hashes.<br />
-Your app is ready to be deployed!
+    function LogoutButton(props) {
+        return (
+            <button onClick={props.onClick}>
+            Logout
+            </button>
+        );
+    }
+    ```
+    - 위의 두 컴포넌트를 사용해 현재 상태에 맞게 로그인/로그아웃 버튼을 렌더링하는 
+    LoginControl 컴포넌트 만들기
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+    ```
+    class LoginControl extends React.Component {
+        constructor(props) {
+            super(props);
+            this.handleLoginClick = this.handleLoginClick.bind(this);
+            this.handleLogoutClick = this.handleLogoutClick.bind(this);
+            this.state = {
+                isLoggedIn: false,
+            }
+        }
 
-### `npm run eject`
+        handleLoginClick() {
+            this.state({
+                isLoggedIn: true,
+            })
+        }
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+        handleLogoutClick() {
+            this.state({
+                isLoggedIn: false,
+            })
+        }
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+        render() {
+            const isLoggedIn: this.state.isLoggedIn;
+            let button;
+            if (isLoggedIn) {
+                button = <LogoutButton onClick={this.handleLogoutClick} />;
+            } else {
+                button = <LoginButton onClick={this.handleLoginClick} />;
+            }
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+            return (
+                <div>
+                    <Greeting isLoggedIn={isLoggedIn} />
+                </div  >
+            );
+        }
+    }
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+    ReactDOM.render(
+        <LoginControl />,
+        document.getElementById('root')
+    );
+    ```
 
-## Learn More
+### 논리 && 연산자로 if를 인라인으로 표현하기
+- [&& 뒤의 엘리먼트 조건이 true일 때 출력]되고, false라면 출력되지 않는다.
+- 예제
+    ```
+    function Mailbox(props){
+        const unreadMeassages = props.unreadMessages;
+        return (
+            <div>
+                <h1>Hello!</h1>
+                {unreadMeassages.length > 0 &&
+                    <h2>
+                        You have {unreadMeassages.length} unread messages.
+                    </h2>
+                }
+            </div>
+        );
+    }
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+    const messages = ['React', 'Re: React', 'Re:Re: React'];
+        ReactDOM.render(
+        <Mailbox unreadMessages={messages} />,
+        document.getElementById('root')
+    );
+  ```
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+### 조건부 연산자로 IF-Else 구문 인라인으로 표현하기(삼항연산자)
+- 조건부 연산자인 [condition ? true : false]로 조건부 렌더링이 가능하다.
+- 예제
+    ```
+    render() {
+        const isLoggedIn = this.state.isLoggedIn;
+        return (
+            <div>
+                The user is <b>{isLoggedIn ? 'currently' : 'not'}</b> logged in.
+            </div>
+        );
+    }
+    ```
 
-### Code Splitting
+### 컴포넌트가 렌더링 하는걸 막기
+- 다른 컴포넌트에 의해 렌더링 되는 것을 막고 싶을 때, 렌더링 결과를 출력하는 대신 null을 반환하면 된다.
+- 예제
+    ```
+    function WarningBanner(props){
+        if (!props.warn) {
+            return null;
+        }
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/code-splitting
+        return (
+            <div>
+                Warning!
+            </div>
+        );
+    }
 
-### Analyzing the Bundle Size
+    class Page extends React.Component {
+        constructor(props) {
+            super(props);
+            this.state = {
+                showWarning: true
+            };
+            this.handleToggleClick = this.handleToggleClick.bind(this);
+        }
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size
+        handleToggleClick() {
+            this.setState(state => ({
+                showWarning: !state.showWarning
+            }));
+        }
 
-### Making a Progressive Web App
+        render() {
+            return(
+                <div>
+                    <WarningBanner warn={this.state.showWarning} />
+                    <button onClick={this.handleToggleClick}>
+                        {this.state.showWarning ? 'Hide' : 'Show'}
+                    </button>
+                </div>
+            );
+        }
+    }
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app
+    ReactDOM.render(
+        <Page />,
+        document.getElementById('root')
+    );
 
-### Advanced Configuration
+  ```
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/advanced-configuration
 
-### Deployment
+## [리스트와 Key]
+### 자바스크립트의 map()
+- 자바스크립트에서 리스트를 변환할 때 사용하는 함수 map()
+- 예제
+```
+const numbers = [1, 2, 3, 4, 5];
+const doubled = numbers.map((number) => number * 2);
+console.log(doubled);
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/deployment
+-> [2, 4, 6, 8, 10];
+```
 
-### `npm run build` fails to minify
+### React에서 map() 함수를 이용해 배열 결과 출력하기
+- 예제
+```
+const numbers = [1, 2, 3, 4, 5];
+const listItems = numbers.map(number) =>
+    <li>{numbers}</li>
+);
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
+ReactDOM.render(
+  <ul>{listItems}</ul>,
+  document.getElementById('root')
+);
+```
+
+- [일반적으로 컴포넌트 안에서 리스트를 렌더링한다.]
+- 예제 
+```
+function NumberList(props) {
+    const numbers = props.number;
+    const listItems = numbers.map((number) =>
+        <li key={number.toString()}>
+            {number}
+        </li>
+    );
+    return (
+        <ul>{listItems}</ul>
+    );
+}
+
+const numbers = [1, 2, 3, 4, 5];
+ReactDOM.render(
+    <NumberList numbers={numbers} />,
+    document.getElementById('root')
+);
+```
+
+### Key
+- key: 엘리먼트 리스트를 만들 때 포함해야 하는 특수한 문자열 어트리뷰트
+- React가 어떤 항목을 변경, 추가 또는 삭제할지 식별하게 하는 역할
+- key는 엘리먼트에 안정적 고유성을 부여하기 위해 배열 내부의 엘리먼트에 지정해야 한다.
+- 리스트의 항목들 중 해당 항목을 고유하게 식별할 수 있는 문자열을 사용하며,
+[주로 데이터의 id를 key로 사용]한다.
+- 예제
+```
+const numbers = [1, 2, 3, 4, 5];
+const listItems = numbers.map((number) =>
+    <li key={number.toString()}>
+        {number}
+    </li>
+);
+```
+
+- 항목 순서가 바뀔 수 있는 경우 인덱스를 key로 사용하지 않는다.
+
