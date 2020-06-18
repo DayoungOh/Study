@@ -2,8 +2,8 @@
 
 ## 목차
 
-6. [조건부 렌더링]
-7. [리스트와 Key]
+6. [조건부 렌더링](#조건부 렌더링)
+7. [리스트와 Key](#리스트와 Key)
 8. [폼]
 9. [State]
 10. [합성 / 상속]
@@ -108,7 +108,7 @@
     ```
 
 ### 논리 && 연산자로 if를 인라인으로 표현하기
-  - [&& 뒤의 엘리먼트 조건이 true일 때 출력]되고, false라면 출력되지 않는다.
+  - '&& 뒤의 엘리먼트 조건이 true일 때 출력'되고, false라면 출력되지 않는다.
   - 예제
     ```
     function Mailbox(props){
@@ -133,7 +133,7 @@
   ```
 
 ### 조건부 연산자로 IF-Else 구문 인라인으로 표현하기(삼항연산자)
-  - 조건부 연산자인 [condition ? true : false]로 조건부 렌더링이 가능하다.
+  - 조건부 연산자인 'condition ? true : false'로 조건부 렌더링이 가능하다.
   - 예제
     ```
     render() {
@@ -223,7 +223,7 @@
   );
   ```
 
-  - [일반적으로 컴포넌트 안에서 리스트를 렌더링한다.]
+  - 일반적으로 컴포넌트 안에서 리스트를 렌더링한다.
   - 예제 
   ```
   function NumberList(props) {
@@ -246,11 +246,10 @@
   ```
 
 ### Key
-  - key: 엘리먼트 리스트를 만들 때 포함해야 하는 특수한 문자열 어트리뷰트
+  - 'key': 엘리먼트 리스트를 만들 때 포함해야 하는 특수한 문자열 어트리뷰트
   - React가 어떤 항목을 변경, 추가 또는 삭제할지 식별하게 하는 역할
   - key는 엘리먼트에 안정적 고유성을 부여하기 위해 배열 내부의 엘리먼트에 지정해야 한다.
-  - 리스트의 항목들 중 해당 항목을 고유하게 식별할 수 있는 문자열을 사용하며,
-  [주로 데이터의 id를 key로 사용]한다.
+  - 리스트의 항목들 중 해당 항목을 고유하게 식별할 수 있는 문자열을 사용하며, 주로 데이터의 'id'를 key로 사용한다.
   - 예제
   ```
   const numbers = [1, 2, 3, 4, 5];
@@ -262,4 +261,75 @@
   ```
 
   - 항목 순서가 바뀔 수 있는 경우 인덱스를 key로 사용하지 않는다.
+
+  - key로 컴포넌트를 추출할 경우, 컴포넌트 안에 key를 부여하는게 아닌, 그 컴포넌트가 사용되는 엘리먼트가 key를 가져야 한다. 
+  - 'map() 함수 내부의 엘리먼트에 key를 넣어주는게 좋다.'
+  ```
+  function ListItem(props) {
+      return <li>{props.value}</li>;
+  }
+
+  function NumberList(props) {
+      const numbers = props.numbers;
+      const listItems = numbers.map((number) =>
+        <ListItem key={number.toString()} value={number} />
+      );
+      return (
+          <ul>
+            {listItems}
+          </ul>
+      );
+  }
+
+  const numbers = [1, 2, 3, 4, 5];
+  ReactDOM.render(
+    <NumberList numbers={numbers} />,
+    document.getElementById('root')
+  );
+  ```
+
+  - key는 형제 사이에서 고유한 값이어야 한다.
+  ```
+  function Blog(props) {
+    const sidebar = (
+        <ul>
+          {props.posts.map((post) =>
+              <li key={post.id}>
+                  {post.title}
+              </li>
+          )}
+        </ul>
+    );
+
+    const content = props.posts.map((post) =>
+        <div key={post.id}>
+            <h3>{post.title}</h3>
+            <p>{post.content}</p>
+        </div>
+    );
+
+    return (
+        <div>
+            {sidebar}
+        </div>
+        <div>
+            {content}
+        </div>
+    );
+  }
+
+  const posts = [
+      {id: 1, title: 'Hello World', content: 'Welcome to learning React'},
+      {id: 2, title: 'Installation', content: 'You can install React from npm.}
+  ];
+  ReactDOM.render(
+      <Blog posts={posts} />,
+      document.getElementById('root')
+  );
+  ```
+
+  ### JSX에 map() 포함시키기
+  
+
+
 
