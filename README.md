@@ -2,8 +2,8 @@
 
 ## 목차
 
-6. [조건부 렌더링](#조건부 렌더링)
-7. [리스트와 Key](#리스트와 Key)
+6. 조건부 렌더링]
+7. [리스트와 Key]
 8. [폼]
 9. [State]
 10. [합성 / 상속]
@@ -108,7 +108,7 @@
     ```
 
 ### 논리 && 연산자로 if를 인라인으로 표현하기
-  - '&& 뒤의 엘리먼트 조건이 true일 때 출력'되고, false라면 출력되지 않는다.
+  - `&& 뒤의 엘리먼트 조건이 true일 때 출력`되고, false라면 출력되지 않는다.
   - 예제
     ```
     function Mailbox(props){
@@ -133,7 +133,7 @@
   ```
 
 ### 조건부 연산자로 IF-Else 구문 인라인으로 표현하기(삼항연산자)
-  - 조건부 연산자인 'condition ? true : false'로 조건부 렌더링이 가능하다.
+  - 조건부 연산자인 `condition ? true : false`로 조건부 렌더링이 가능하다.
   - 예제
     ```
     render() {
@@ -246,10 +246,10 @@
   ```
 
 ### Key
-  - 'key': 엘리먼트 리스트를 만들 때 포함해야 하는 특수한 문자열 어트리뷰트
+  - `key`: 엘리먼트 리스트를 만들 때 포함해야 하는 특수한 문자열 어트리뷰트
   - React가 어떤 항목을 변경, 추가 또는 삭제할지 식별하게 하는 역할
   - key는 엘리먼트에 안정적 고유성을 부여하기 위해 배열 내부의 엘리먼트에 지정해야 한다.
-  - 리스트의 항목들 중 해당 항목을 고유하게 식별할 수 있는 문자열을 사용하며, 주로 데이터의 'id'를 key로 사용한다.
+  - 리스트의 항목들 중 해당 항목을 고유하게 식별할 수 있는 문자열을 사용하며, 주로 데이터의 `id`를 key로 사용한다.
   - 예제
   ```
   const numbers = [1, 2, 3, 4, 5];
@@ -263,7 +263,7 @@
   - 항목 순서가 바뀔 수 있는 경우 인덱스를 key로 사용하지 않는다.
 
   - key로 컴포넌트를 추출할 경우, 컴포넌트 안에 key를 부여하는게 아닌, 그 컴포넌트가 사용되는 엘리먼트가 key를 가져야 한다. 
-  - 'map() 함수 내부의 엘리먼트에 key를 넣어주는게 좋다.'
+  - `map() 함수 내부의 엘리먼트에 key를 넣어주는게 좋다.`
   ```
   function ListItem(props) {
       return <li>{props.value}</li>;
@@ -328,8 +328,138 @@
   );
   ```
 
-  ### JSX에 map() 포함시키기
-  
+## [Form]
+
+### 제어 컴포넌트(Controlled Component)
+  - 폼을 렌더링하는 리액트 컴포넌트는 폼에 발생하는 사용자 입력값을 제외하고 이렇게 제어되는 입력 폼 엘리먼트(input, textarea, select 등)를 제어 컴포넌트라고 한다.
+  - 예제
+  ```
+  class NameForm extends React.Component {
+      constructor(props) {
+          super(props);
+          this.state = {value: ''};
+
+          this.handleChange = this.handleChange.bind(this);
+          this.handleSubmit = this.handleSubmit.bind(this);
+      }
+
+      handleChange(e) {
+          this.setState({
+              value: e.target.value;
+          })
+      }
+
+      handleSubmit(e) {
+          alert('A name was sumitted: ' + this.state.value);
+          e.preventDefault();
+      }
+
+      render() {
+          return (
+              <form onSubmit={this.handleSubmit}>
+                <label>
+                    Name:
+                    <input type="text" value={this.state.value} onChange={this.handleChange} />
+                </label>
+                <input type="submit" value="Submit">
+              </form>
+          );
+      }
+  }
+  ```
+
+### textarea tag
+  - React에서 textarea 엘리먼트는 텍스트를 자식으로 정의한다.
+  - this.state.value를 생성자에서 초기화하므로 textarea는 일부 텍스트를 자식으로 가진 채로 시작된다는 점에 주의한다.
+  - 예제
+  ```
+  class EssayForm extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+        value: 'Please write an essay about your favorite DOM element.'
+        };
+
+        this.handleChange = this.handleChange.bind(this);
+        this.handleSubmit = this.handleSubmit.bind(this);
+    }
+
+    handleChange(event) {
+        this.setState({value: event.target.value});
+    }
+
+    handleSubmit(event) {
+        alert('An essay was submitted: ' + this.state.value);
+        event.preventDefault();
+    }
+
+    render() {
+        return (
+        <form onSubmit={this.handleSubmit}>
+            <label>
+            Essay:
+            <textarea value={this.state.value} onChange={this.handleChange} />
+            </label>
+            <input type="submit" value="Submit" />
+        </form>
+        );
+    }
+  }
+  ```
+
+### select tag
+  - React에서는 최상단 select 태그에 value 어트리뷰트를 사용한다.
+  - default로 설정된 옵션을 state의 value로 주는 점에 유의한다.
+  - 예제
+  ```
+  class FlavorForm extends React.Component {
+      constructor(props) {
+          super(props);
+          this.state = {value: 'coconut'};
+
+          this.handleChange = this.handleChange.bind(this);
+          this.handleSubmit = this.handleSubmit.bind(this);
+      }
+
+      handleChange(e) {
+          this.setState({
+              value: e.target.value
+          });
+      }
+
+      handleSubmit(e) {
+        alert('Your favorite flavor is: ' + this.state.value);
+        e.preventDefault();
+      }
+
+      render() {
+          return (
+              <form onSubmit={this.handleSubmit}>
+                <label>
+                    Pick your favorite flavor:
+                    <select value={this.state.value} onChange={this.handleChange}>
+                        <option value="grapefruit">Grapefruit</option>
+                        <option value="lime">Lime</option>
+                        <option value="coconut">Coconut</option>
+                        <option value="mango">Mango</option>
+                    </select>
+                </label>
+                <input type="submit" value="Submit" />
+              </form>
+          );
+      }
+  }
+  ```
+  * select 태그에 multiple 옵션을 허용하면, value 어트리뷰트에 배열을 전달 할 수 있따
+  ```
+  <select multiple={true} value={['B', 'C']}>
+  ```
+
+### file tag
+  ```
+  <input type="file">
+  ```
+
 
 
 
