@@ -1,4 +1,4 @@
-## Main Concepts
+# Main Concepts
 
 ## 목차
 
@@ -9,10 +9,11 @@
 10. [합성 / 상속]
 
 ## [조건부 렌더링]
+
 - if문이나 조건부 연산자(삼항연산자)를 사용해 현재 상태에 맞는 UI를 업데이트 한다.
 
 ### 로그인 여부 상태에 따라 로그인/로그아웃 버튼 바뀌도록 하는 Greeting 컴포넌트 생성하기
-- 예제
+  - 예제
   ```
   function UserGreeting(props) {        
       return <h1>Welcome back!</h1>
@@ -36,7 +37,7 @@
 
   ```
 
-  ### 엘리먼트 변수
+### 엘리먼트 변수
   - 엘리먼트를 저장하기 위해 변수를 사용하고, 출력의 다른 부분은 변하지 않은 채로 컴포넌트 일부를 조건부로 렌더링 할 수 있다.
 
   - 예제
@@ -57,7 +58,7 @@
         );
     }
     ```
-    - 위의 두 컴포넌트를 사용해 현재 상태에 맞게 로그인/로그아웃 버튼을 렌더링하는 
+  - 위의 두 컴포넌트를 사용해 현재 상태에 맞게 로그인/로그아웃 버튼을 렌더링하는 
     LoginControl 컴포넌트 만들기
 
     ```
@@ -107,8 +108,8 @@
     ```
 
 ### 논리 && 연산자로 if를 인라인으로 표현하기
-- [&& 뒤의 엘리먼트 조건이 true일 때 출력]되고, false라면 출력되지 않는다.
-- 예제
+  - [&& 뒤의 엘리먼트 조건이 true일 때 출력]되고, false라면 출력되지 않는다.
+  - 예제
     ```
     function Mailbox(props){
         const unreadMeassages = props.unreadMessages;
@@ -132,8 +133,8 @@
   ```
 
 ### 조건부 연산자로 IF-Else 구문 인라인으로 표현하기(삼항연산자)
-- 조건부 연산자인 [condition ? true : false]로 조건부 렌더링이 가능하다.
-- 예제
+  - 조건부 연산자인 [condition ? true : false]로 조건부 렌더링이 가능하다.
+  - 예제
     ```
     render() {
         const isLoggedIn = this.state.isLoggedIn;
@@ -146,8 +147,8 @@
     ```
 
 ### 컴포넌트가 렌더링 하는걸 막기
-- 다른 컴포넌트에 의해 렌더링 되는 것을 막고 싶을 때, 렌더링 결과를 출력하는 대신 null을 반환하면 된다.
-- 예제
+  - 다른 컴포넌트에 의해 렌더링 되는 것을 막고 싶을 때, 렌더링 결과를 출력하는 대신 null을 반환하면 된다.
+  - 예제
     ```
     function WarningBanner(props){
         if (!props.warn) {
@@ -198,67 +199,67 @@
 
 ## [리스트와 Key]
 ### 자바스크립트의 map()
-- 자바스크립트에서 리스트를 변환할 때 사용하는 함수 map()
-- 예제
-```
-const numbers = [1, 2, 3, 4, 5];
-const doubled = numbers.map((number) => number * 2);
-console.log(doubled);
-
--> [2, 4, 6, 8, 10];
-```
+  - 자바스크립트에서 리스트를 변환할 때 사용하는 함수 map()
+  - 예제
+  ```
+  const numbers = [1, 2, 3, 4, 5];
+  const doubled = numbers.map((number) => number * 2);
+  console.log(doubled);
+  
+  -> [2, 4, 6, 8, 10];
+  ```
 
 ### React에서 map() 함수를 이용해 배열 결과 출력하기
-- 예제
-```
-const numbers = [1, 2, 3, 4, 5];
-const listItems = numbers.map(number) =>
-    <li>{numbers}</li>
-);
-
-ReactDOM.render(
-  <ul>{listItems}</ul>,
-  document.getElementById('root')
-);
-```
-
-- [일반적으로 컴포넌트 안에서 리스트를 렌더링한다.]
-- 예제 
-```
-function NumberList(props) {
-    const numbers = props.number;
-    const listItems = numbers.map((number) =>
-        <li key={number.toString()}>
-            {number}
-        </li>
-    );
-    return (
-        <ul>{listItems}</ul>
-    );
-}
-
-const numbers = [1, 2, 3, 4, 5];
-ReactDOM.render(
-    <NumberList numbers={numbers} />,
+  - 예제
+  ```
+  const numbers = [1, 2, 3, 4, 5];
+  const listItems = numbers.map(number) =>
+      <li>{numbers}</li>
+  );
+  
+  ReactDOM.render(
+    <ul>{listItems}</ul>,
     document.getElementById('root')
-);
-```
+  );
+  ```
+
+  - [일반적으로 컴포넌트 안에서 리스트를 렌더링한다.]
+  - 예제 
+  ```
+  function NumberList(props) {
+      const numbers = props.number;
+      const listItems = numbers.map((number) =>
+          <li key={number.toString()}>
+              {number}
+          </li>
+      );
+      return (
+          <ul>{listItems}</ul>
+      );
+  }
+  
+  const numbers = [1, 2, 3, 4, 5];
+  ReactDOM.render(
+      <NumberList numbers={numbers} />,
+      document.getElementById('root')
+  );
+  ```
 
 ### Key
-- key: 엘리먼트 리스트를 만들 때 포함해야 하는 특수한 문자열 어트리뷰트
-- React가 어떤 항목을 변경, 추가 또는 삭제할지 식별하게 하는 역할
-- key는 엘리먼트에 안정적 고유성을 부여하기 위해 배열 내부의 엘리먼트에 지정해야 한다.
-- 리스트의 항목들 중 해당 항목을 고유하게 식별할 수 있는 문자열을 사용하며,
-[주로 데이터의 id를 key로 사용]한다.
-- 예제
-```
-const numbers = [1, 2, 3, 4, 5];
-const listItems = numbers.map((number) =>
-    <li key={number.toString()}>
-        {number}
-    </li>
-);
-```
+  - key: 엘리먼트 리스트를 만들 때 포함해야 하는 특수한 문자열 어트리뷰트
+  - React가 어떤 항목을 변경, 추가 또는 삭제할지 식별하게 하는 역할
+  - key는 엘리먼트에 안정적 고유성을 부여하기 위해 배열 내부의 엘리먼트에 지정해야 한다.
+  - 리스트의 항목들 중 해당 항목을 고유하게 식별할 수 있는 문자열을 사용하며,
+  [주로 데이터의 id를 key로 사용]한다.
+  - 예제
+  ```
+  const numbers = [1, 2, 3, 4, 5];
+  const listItems = numbers.map((number) =>
+      <li key={number.toString()}>
+          {number}
+      </li>
+  );
+  ```
 
-- 항목 순서가 바뀔 수 있는 경우 인덱스를 key로 사용하지 않는다.
+  - 항목 순서가 바뀔 수 있는 경우 인덱스를 key로 사용하지 않는다.
 
