@@ -460,6 +460,87 @@
   <input type="file">
   ```
 
+### 다중 입력 제어하기
+  - 여러 `input` 엘리먼트를 제어할 때, 각 엘리먼트에 `name` 어트리뷰트를 추가하고 `e.target.name` 값을 통해 핸들러가 어떤 작업을 해야할지 분기를 태워준다.
+  - 예제
+  ```
+  class Reservation extend React.Component {
+      constructor(props) {
+          super(props);
+          this.state = {
+              isGoing: true,
+              numberOfGuests: 2,
+          };
+          this.handleInputChange = this.handleInputChange.bind(this);
+      }
+
+      handleInputChange(e) {
+          const target = e.target;
+          const value = target.name === 'isGoing' ? target.checked : target.value;
+          const name = target.name;
+
+          this.setState({
+              [name] : value
+          });
+      }
+
+      render() {
+          return (
+              <form>
+                <label>
+                    Is Going:
+                    <input
+                    type="checkbox"
+                    name="isGoing"
+                    checked={this.state.isGoing}
+                    onChange={this.handleInputChange} />
+                </label>
+                <br/>
+                <label>
+                    Number of guests:
+                    <input
+                    type="number"
+                    name="numberOfGuests"
+                    value={this.state.numberOfGuests}
+                    onChange={this.handleInputChange} />
+                </label>
+              </form>
+          );
+      }
+  }
+  ```
+  - `setState()`의 경우 현재 state에 일부 state를 병합하기 때문에 바뀐 부분에 대해서만 호출하면 된다.
+
+### 비제어 컴포넌트
+  - 모든 state 업데이트에 대한 이벤트 핸들러를 작성하는 대신, `ref`를 사용해 비제어 컴포넌트를 만들면 DOM에서 직접 폼 값을 가져올 수 있다.
+  - 예제
+  ```
+  class NameForm extends React.Component {
+      constructor(props) {
+          super(props)
+          this.handleSubmit = this.handleSubmit.bind(this);
+          this.input = React.createRef();
+      }
+
+      handleSubmit(e) {
+          alert('A name was submitted: ' + this.input.current.value);
+          e.preventDefault();
+      }
+
+      render() {
+          return (
+              <form onSubmit={this.handleSubmit}>
+                <label>
+                    Name:
+                    <input type="text" ref={this.input} />
+                </label>
+                <input type="submit" value="Submit" />
+              </form>
+          );
+      }
+  }
+  ```
+
 
 
 
